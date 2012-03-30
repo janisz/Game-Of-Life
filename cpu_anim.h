@@ -63,7 +63,7 @@ struct CPUAnimBitmap {
         char* dummy = "";
         glutInit( &c, &dummy );
         glutInitDisplayMode( GLUT_DOUBLE | GLUT_RGBA );
-        glutInitWindowSize( width, height );
+        glutInitWindowSize( width*k, height*k );
         glutCreateWindow( "GameOfLife " );
         glutKeyboardFunc(Key);
         glutDisplayFunc(Draw);
@@ -123,6 +123,7 @@ struct CPUAnimBitmap {
         glClear( GL_COLOR_BUFFER_BIT );
         glDrawPixels( w, h, GL_RGBA, GL_UNSIGNED_BYTE, bitmap );
         glutSwapBuffers();
+		delete bitmap;
     }
 
 	//scale bitmaps (grow only)

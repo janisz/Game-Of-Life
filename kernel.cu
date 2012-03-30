@@ -20,20 +20,20 @@ __device__ int step( int i, int j, unsigned char *col ) {
 	if (i != 0)
 	{
 		aliveNeighbours += (col[4*INDEX(i - 1,j)]) ? 1 : 0;
+		if (j+1 < DIM)
 		aliveNeighbours += (col[4*INDEX(i - 1,j + 1)]) ? 1 : 0;
 	}
 	if (j != 0)
 	{
+		if (i+1 < DIM)	
 		aliveNeighbours += (col[4*INDEX(i + 1,j - 1)]) ? 1 : 0;
 		aliveNeighbours += (col[4*INDEX(i,j - 1)]) ? 1 : 0;
 	}
-	if (j + 1 < DIM)
-	{
+	if (i+1 < DIM && j+1<DIM)
+		aliveNeighbours += (col[4*INDEX(i + 1,j + 1)]) ? 1 : 0;
+	if (j+1 < DIM)
 		aliveNeighbours += (col[4*INDEX(i,j + 1)]) ? 1 : 0;
-		if (i + 1 < DIM)
-			aliveNeighbours += (col[4*INDEX(i + 1,j + 1)]) ? 1 : 0;
-	}
-	if (i + 1 < DIM)
+	if (i+1 < DIM)	
 		aliveNeighbours += (col[4*INDEX(i + 1,j)]) ? 1 : 0;
 
 	if (col[4*INDEX(i,j)] && aliveNeighbours > 1 && aliveNeighbours < 4)
