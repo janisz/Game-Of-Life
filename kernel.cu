@@ -2,7 +2,7 @@
 #include "cpu_bitmap.h"
 #include "cpu_anim.h"
 
-#define DIM 100
+#define DIM 200
 #define INDEX(x, y) ((x)+(y)*DIM)
 
 // Wartoœci wymagane przez procedurê aktualizuj¹c¹
@@ -87,8 +87,7 @@ void generate_frame( DataBlock *d, int ticks )
 
     HANDLE_ERROR( cudaMemcpy( d->bitmap->get_ptr(), d->dev_bitmap,
                               d->bitmap->image_size(),
-                              cudaMemcpyDeviceToHost ) );
-//    d->bitmap->Scale(10);             
+                              cudaMemcpyDeviceToHost ) );          
 
 }
 // Zwolnienie pamiêci na GPU
