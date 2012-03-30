@@ -13,7 +13,6 @@
  *
  */
 
-
 #ifndef __CPU_BITMAP_H__
 #define __CPU_BITMAP_H__
 
@@ -50,7 +49,7 @@ struct CPUBitmap {
         glutInit( &c, &dummy );
         glutInitDisplayMode( GLUT_SINGLE | GLUT_RGBA );
         glutInitWindowSize( x, y );
-        glutCreateWindow( "bitmap" );
+        glutCreateWindow( "Game Of Life" );
         glutKeyboardFunc(Key);
         glutDisplayFunc(Draw);
         glutMainLoop();
@@ -81,6 +80,21 @@ struct CPUBitmap {
         glDrawPixels( bitmap->x, bitmap->y, GL_RGBA, GL_UNSIGNED_BYTE, bitmap->pixels );
         glFlush();
     }
+
+	//scale bitmaps (grow only)
+	void Scale(int k)
+	{
+		if (k < 1) return;
+		unsigned char *newPixels = new unsigned char[x * k * y * k * 4];
+		for (int i=0;i<x;i++)		for (int j=0;j<y;j++)
+		for (int a=0;a<k;a++)		for (int b=0;b<k;b++)
+		for (int c=0;c<4;c++)		newPixels[((j*k+a)*k*x*4+4*(i*k+b))+c] = pixels[4*(j*x+i)+c];
+
+		delete pixels;
+		pixels = newPixels;
+		x *= k;
+		y *= k;
+	}
 };
 
 #endif  // __CPU_BITMAP_H__

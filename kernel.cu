@@ -36,19 +36,19 @@ __device__ int step( int i, int j, unsigned char *col ) {
  
 }
 
-//__global__ void kernel( unsigned char *ptr ) {
-//    // Odwzorowanie z blockIdx na po³o¿enie piksela
-//    int x = blockIdx.x;
-//    int y = blockIdx.y;
-//    int offset = x + y * gridDim.x;
-//
-//    // Obliczenie wartoœci dla tego miejsca
-//    int isAlive = step( x, y, ptr );
-//    ptr[offset*4 + 0] = 255 * isAlive;	//Red
-//    ptr[offset*4 + 1] = 255 * isAlive;	//Green
-//    ptr[offset*4 + 2] = 255 * isAlive;	//Blue
-//    ptr[offset*4 + 3] = 255 * isAlive;	//Alpha
-//}
+__global__ void kernel( unsigned char *ptr ) {
+    // Odwzorowanie z blockIdx na po³o¿enie piksela
+    int x = blockIdx.x;
+    int y = blockIdx.y;
+    int offset = x + y * gridDim.x;
+
+    // Obliczenie wartoœci dla tego miejsca
+    int isAlive = step( x, y, ptr );
+    ptr[offset*4 + 0] = 255 * isAlive;	//Red
+    ptr[offset*4 + 1] = 255 * isAlive;	//Green
+    ptr[offset*4 + 2] = 255 * isAlive;	//Blue
+    ptr[offset*4 + 3] = 255 * isAlive;	//Alpha
+}
 
 __global__ void setBoard( unsigned char *ptr ) {
     // Odwzorowanie z blockIdx na po³o¿enie piksela
@@ -86,7 +86,8 @@ int main( void ) {
                               cudaMemcpyDeviceToHost ) );
                               
     HANDLE_ERROR( cudaFree( dev_bitmap ) );
-                              
+    
+	bitmap.Scale(10);
     bitmap.display_and_exit();
 }
 
