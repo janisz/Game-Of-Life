@@ -121,6 +121,21 @@ struct CPUAnimBitmap {
         glDrawPixels( bitmap->width, bitmap->height, GL_RGBA, GL_UNSIGNED_BYTE, bitmap->pixels );
         glutSwapBuffers();
     }
+
+	//scale bitmaps (grow only)
+	void Scale(int k)
+	{
+		if (k < 1) return;
+		unsigned char *newPixels = new unsigned char[width * k * height * k * 4];
+		for (int i=0;i<width;i++)		for (int j=0;j<height;j++)
+		for (int a=0;a<k;a++)		for (int b=0;b<k;b++)
+		for (int c=0;c<4;c++)		newPixels[((j*k+a)*k*width*4+4*(i*k+b))+c] = pixels[4*(j*width+i)+c];
+
+		delete pixels;
+		pixels = newPixels;
+		width *= k;
+		height *= k;
+	}
 };
 
 
