@@ -37,14 +37,14 @@ __device__ int step( int i, int j, unsigned char *col ) {
 		aliveNeighbours += (col[4*INDEX(i + 1,j)]) ? 1 : 0;
 
 	if (col[4*INDEX(i,j)] && aliveNeighbours > 1 && aliveNeighbours < 4)
-		return 1;
+		return aliveNeighbours;
 	if (!col[4*INDEX(i,j)] && aliveNeighbours > 2 && aliveNeighbours < 4)
-		return 1;
+		return aliveNeighbours;
 	return 0;
  
 }
 
-__global__ void kernel( unsigned char *ptr, unsigned char *pom ) {
+__global__ void kernel( unsigned char *ptr, unsigned char *pom, int t ) {
     // Odwzorowanie z blockIdx na po³o¿enie piksela
     int x = blockIdx.x;
     int y = blockIdx.y;
@@ -53,8 +53,8 @@ __global__ void kernel( unsigned char *ptr, unsigned char *pom ) {
     // Obliczenie wartoœci dla tego miejsca
     int isAlive = step( x, y, ptr );
     pom[offset*4 + 0] = 255 * isAlive;	//Red
-    pom[offset*4 + 1] = 255 * isAlive;	//Green
-    pom[offset*4 + 2] = 255 * isAlive;	//Blue
+    pom[offset*4 + 1] = 80 * isAlive;	//Green
+    pom[offset*4 + 2] = 30 * isAlive;	//Blue
     pom[offset*4 + 3] = 255 * isAlive;	//Alpha
 }
 
@@ -79,7 +79,7 @@ void generate_frame( DataBlock *d, int ticks )
 	if (ticks == 1)
 		setBoard<<<grid,1>>>( d->dev_bitmap );
 
-    kernel<<<grid,1>>>( d->dev_bitmap, d->dev_pom_bitmap );
+    kernel<<<grid,1>>>( d->dev_bitmap, d->dev_pom_bitmap, ticks );
 
     HANDLE_ERROR( cudaMemcpy( d->dev_bitmap, d->dev_pom_bitmap,
                               d->bitmap->image_size(),
