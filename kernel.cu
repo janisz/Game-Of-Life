@@ -1,5 +1,4 @@
 #include "common.h"
-#include "cpu_bitmap.h"
 #include "cpu_anim.h"
 
 #define DIM 200
@@ -54,7 +53,7 @@ __global__ void kernel( unsigned char *ptr, unsigned char *pom, int t ) {
     int isAlive = step( x, y, ptr );
     pom[offset*4 + 0] = 255 * isAlive;	//Red
     pom[offset*4 + 1] = 80 * isAlive;	//Green
-    pom[offset*4 + 2] = 30 * isAlive;	//Blue
+    pom[offset*4 + 2] = t%80  * isAlive;	//Blue
     pom[offset*4 + 3] = 255 * isAlive;	//Alpha
 }
 
