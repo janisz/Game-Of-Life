@@ -37,7 +37,7 @@ struct CPUAnimBitmap {
         pixels = new unsigned char[width * height * 4];
         dataBlock = d;
         clickDrag = NULL;
-		k = 5;
+		k = 1;
     }
 
 
@@ -117,19 +117,21 @@ struct CPUAnimBitmap {
 
     // static method used for glut callbacks
     static void Draw( void ) {
-		int w=0, h=0;
-        unsigned char*   bitmap = (*get_bitmap_ptr())->Scale(w, h);
+		int w=(*get_bitmap_ptr())->width, h=(*get_bitmap_ptr())->height;
+        unsigned char*   bitmap = (*get_bitmap_ptr())->pixels;//(*get_bitmap_ptr())->Scale(w, h);
         glClearColor( 0.0, 0.0, 0.0, 1.0 );
         glClear( GL_COLOR_BUFFER_BIT );
         glDrawPixels( w, h, GL_RGBA, GL_UNSIGNED_BYTE, bitmap );
         glutSwapBuffers();
-		delete bitmap;
+//		delete bitmap;
     }
 
 	//scale bitmaps (grow only)
 	unsigned char* Scale(int &w, int &h)
 	{
-		if (k < 1) return pixels;
+		w = width;
+		h = height;
+		if (k < 2) return pixels;
 		unsigned char *newPixels = new unsigned char[width * k * height * k * 4];
 		for (int i=0;i<width;i++)	for (int j=0;j<height;j++)
 		for (int a=0;a<k;a++)		for (int b=0;b<k;b++)

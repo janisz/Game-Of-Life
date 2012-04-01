@@ -1,7 +1,7 @@
 #include "common.h"
 #include "cpu_anim.h"
 
-#define DIM 200
+#define DIM 500
 #define INDEX(x, y) ((x)+(y)*DIM)
 
 // Wartoœci wymagane przez procedurê aktualizuj¹c¹
@@ -74,6 +74,11 @@ __global__ void setBoard( unsigned char *ptr ) {
 
 void generate_frame( DataBlock *d, int ticks )
 {
+	 cudaEvent_t     start, stop;
+	HANDLE_ERROR( cudaEventCreate( &start ) );
+    HANDLE_ERROR( cudaEventCreate( &stop ) );
+	HANDLE_ERROR( cudaEventRecord( start, 0 ) );
+
 	dim3    grid(DIM,DIM);
 	if (ticks == 1)
 		setBoard<<<grid,1>>>( d->dev_bitmap );
@@ -88,6 +93,16 @@ void generate_frame( DataBlock *d, int ticks )
                               d->bitmap->image_size(),
                               cudaMemcpyDeviceToHost ) );          
 
+	HANDLE_ERROR( cudaEventRecord( stop, 0 ) );
+    HANDLE_ERROR( cudaEventSynchronize( stop ) );
+    float   elapsedTime;
+    HANDLE_ERROR( cudaEventElapsedTime( &elapsedTime,
+                                        start, stop ) );
+	printf( "Czas generowania klatki:\t  %3.1f ms\n",
+            elapsedTime  );
+
+	HANDLE_ERROR( cudaEventDestroy( start ) );
+    HANDLE_ERROR( cudaEventDestroy( stop ) );
 }
 // Zwolnienie pamiêci na GPU
 void cleanup( DataBlock *d ) {
